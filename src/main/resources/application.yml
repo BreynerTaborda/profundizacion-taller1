@@ -2,7 +2,7 @@ spring:
   application:
     name: app-courses
   profiles:
-    active: dev
+    active: prod
 server:
   servlet:
     context-path: /taller1/api/v1
