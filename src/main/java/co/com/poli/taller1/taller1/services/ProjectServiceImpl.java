@@ -6,17 +6,19 @@ import co.com.poli.taller1.taller1.persistence.repository.ProjectRepository;
 import co.com.poli.taller1.taller1.services.dto.ProjectInDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class ProjectServiceImpl implements ProjectService{
 
-    @Autowired
-    private ProjectRepository projectRepository;
 
-    @Autowired
-    private ProjectDTOtoProject projectDTOtoProject;
+    private final ProjectRepository projectRepository;
+
+
+    private final ProjectDTOtoProject projectDTOtoProject;
 
     @Override
     public List<Project> findAll() {
@@ -25,8 +27,20 @@ public class ProjectServiceImpl implements ProjectService{
 
     @Override
     public Project save(ProjectInDTO projectDTO) {
-        Project project = projectDTOtoProject.mapper(projectDTO);
+        Project project = this.findByProjectIdentifier(projectDTO.getProjectIdentifier());
+
+        if(project != null){
+            return null;
+        }
+
+        project = projectDTOtoProject.mapper(projectDTO);
 
         return this.projectRepository.save(project);
+    }
+
+    @Override
+    public Project findByProjectIdentifier(String projectIdentifier){
+
+        return this.projectRepository.findByProjectIdentifier(projectIdentifier);
     }
 }

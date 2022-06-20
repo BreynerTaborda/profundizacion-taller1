@@ -27,13 +27,13 @@ public class ProjectTaskInDTO {
 
     @Min(1)
     @Max(8)
-    @Positive
     private Double hours;
 
     private Date startDate;
 
     private Date endDate;
 
+    @NotBlank
     private String projectIdentifier;
 
     public String getName() {

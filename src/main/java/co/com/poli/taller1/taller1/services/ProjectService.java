@@ -10,4 +10,6 @@ public interface ProjectService {
     List<Project> findAll();
 
     Project save(ProjectInDTO project);
+
+    Project findByProjectIdentifier(String projectIdentifier);
 }
