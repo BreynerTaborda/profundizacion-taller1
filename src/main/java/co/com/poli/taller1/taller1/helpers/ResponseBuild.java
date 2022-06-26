@@ -33,4 +33,13 @@ public class ResponseBuild {
         return response;
     }
 
+    public Response failedNotFound(Object data){
+        Response response = new Response.Builder()
+                .code(HttpStatus.NOT_FOUND.value())
+                .data(data)
+                .build();
+
+        return response;
+    }
+
 }

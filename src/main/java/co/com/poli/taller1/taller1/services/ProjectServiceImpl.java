@@ -33,6 +33,13 @@ public class ProjectServiceImpl implements ProjectService{
             return null;
         }
 
+        project = this.projectRepository.findByProjectName(projectDTO.getProjectName());
+
+         if(project != null){
+             project.setId(-1);
+             return project;
+         }
+
         project = projectDTOtoProject.mapper(projectDTO);
 
         return this.projectRepository.save(project);

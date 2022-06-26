@@ -53,7 +53,13 @@ public class ProjectTaskServiceImpl implements  ProjectTaskService{
             return null;
         }
 
-        return this.projectTaskRepository.countHoursNoDeleted(projectIdentifier);
+        Double cantidadHoras = this.projectTaskRepository.countHoursNoDeleted(projectIdentifier);
+
+        if(cantidadHoras == null){
+            return -1D;
+        }
+
+        return cantidadHoras;
     }
 
     @Transactional
@@ -65,28 +71,36 @@ public class ProjectTaskServiceImpl implements  ProjectTaskService{
             return null;
         }
 
-        return this.projectTaskRepository.countHoursByStatus(projectIdentifier, status.ordinal());
+        Double cantidadHoras = this.projectTaskRepository.countHoursByStatus(projectIdentifier, status.ordinal());
+
+        if(cantidadHoras == null){
+            return -1D;
+        }
+
+        return cantidadHoras;
     }
 
     @Transactional
     @Override
     public String deleteTaskLogicoById(Long id, String projectIdentifier) {
-        Backlog backlog = this.backlogService.findByProjectIdentifier(projectIdentifier);
-
-        if(backlog == null){
-            return null;
-        }
-
         Optional<ProjectTask> projectTask = this.projectTaskRepository.findById(id);
 
         if(projectTask.isEmpty()){
             return null;
+        }else if(!projectTask.get().getProjectIdentifier().equals(projectIdentifier)){
+            return "Task no en projecIdentifier";
+        }
+
+        Backlog backlog = this.backlogService.findByProjectIdentifier(projectIdentifier);
+
+        if(backlog == null){
+            return "Backlog inexistente";
         }
 
         TaskStatus status = TaskStatus.DELETED;
 
         this.projectTaskRepository.deleteTaskLogicoById(id, projectIdentifier, status.ordinal());
 
-        return "Correcto";
+        return "Se ha eliminado el task correctamente";
     }
 }

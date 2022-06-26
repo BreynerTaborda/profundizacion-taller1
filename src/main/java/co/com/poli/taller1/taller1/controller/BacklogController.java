@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+
+
 @RestController
 @RequestMapping("/backlogs")
 public class BacklogController {
@@ -41,6 +43,13 @@ public class BacklogController {
             FieldError fieldError = new FieldError("data","projectIdentifier","",
                     false, null, null,
                     "No existe el project con identificador: " + backlogInDTO.getProjectIdentifier());
+            result.addError(fieldError);
+
+            return this.responseBuild.failed(formatMessage(result));
+        }else if(backlog.getId() == -1){
+            FieldError fieldError = new FieldError("data","projectIdentifier","",
+                    false, null, null,
+                    "Ya existe un backlog con identificador: " + backlogInDTO.getProjectIdentifier());
             result.addError(fieldError);
 
             return this.responseBuild.failed(formatMessage(result));

@@ -35,6 +35,10 @@ public class ProjectController {
 
     @PostMapping
     public Response save(@Valid @RequestBody ProjectInDTO projectDTO, BindingResult result) {
+        if(result.hasErrors()){
+            return this.responseBuild.failed(formatMessage(result));
+        }
+
         Project project=  this.projectService.save(projectDTO);
 
         if(project == null){
@@ -45,12 +49,14 @@ public class ProjectController {
             result.addError(fieldError);
 
             return this.responseBuild.failed(formatMessage(result));
-        }
+        }else if (project.getId() == -1){
+            FieldError fieldError = new FieldError("data","projectName","",
+                    false, null, null,
+                    "Ya existe un project con el nombre: " + projectDTO.getProjectName());
+            result.addError(fieldError);
 
-        if(result.hasErrors()){
             return this.responseBuild.failed(formatMessage(result));
         }
-
 
         return this.responseBuild.successCreated(projectDTO);
     }

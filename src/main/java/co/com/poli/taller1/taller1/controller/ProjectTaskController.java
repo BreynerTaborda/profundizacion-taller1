@@ -63,7 +63,7 @@ public class ProjectTaskController {
 //
 //            System.out.println("ASDASDASDASDASDASDASDASDASDASDASDASDASD");
             String mensajeError = "No existen task para el projectIdentifier: "+ projectIdentifier ;
-            return this.responseBuild.failed(mensajeError);
+            return this.responseBuild.failedNotFound(mensajeError);
         }
 
         return this.responseBuild.success(projectTasks);
@@ -75,7 +75,10 @@ public class ProjectTaskController {
 
         if(cantidadHoras == null){
             String mensajeError = "No existe el projectIdentifier: "+ projectIdentifier ;
-            return this.responseBuild.failed(mensajeError);
+            return this.responseBuild.failedNotFound(mensajeError);
+        }else if(cantidadHoras == -1D){
+            String mensajeError = "No existen tareas para el projectIdentifier: "+ projectIdentifier + " en el status diferente a DELETED ";
+            return this.responseBuild.failedNotFound(mensajeError);
         }
 
         return this.responseBuild.success(cantidadHoras);
@@ -87,7 +90,10 @@ public class ProjectTaskController {
 
         if(cantidadHoras == null){
             String mensajeError = "No existe el projectIdentifier: "+ projectIdentifier ;
-            return this.responseBuild.failed(mensajeError);
+            return this.responseBuild.failedNotFound(mensajeError);
+        }else if(cantidadHoras == -1D){
+            String mensajeError = "No existen tareas para el projectIdentifier: "+ projectIdentifier + " en el status: " + status.toString();
+            return this.responseBuild.failedNotFound(mensajeError);
         }
 
         return this.responseBuild.success(cantidadHoras);
@@ -96,12 +102,19 @@ public class ProjectTaskController {
     @PatchMapping("/task/{idtask}/{projectIdentifier}")
     public Response deleteTaskLogicoById(@PathVariable("idtask") Long id, @PathVariable("projectIdentifier") String projectIdentifier) {
         String result = this.projectTaskService.deleteTaskLogicoById(id, projectIdentifier);
-
+        String mensajeError = "";
         if(result == null){
-            return this.responseBuild.failed(result);
+            mensajeError = "No existe la tarea con id:" + id + " para el backlog: " + projectIdentifier;
+            return this.responseBuild.failedNotFound(mensajeError);
+        }else if(result.equals("Backlog inexistente")){
+            mensajeError = "No existe el backlog: "+ projectIdentifier ;
+            return this.responseBuild.failedNotFound(mensajeError);
+        }else if(result.equals("Task no en projecIdentifier")){
+            mensajeError = "La task con id: " + id + " no esta relacionado con el projectIdentifier: " + projectIdentifier;
+            return this.responseBuild.failedNotFound(mensajeError);
         }
 
-        return this.responseBuild.success("Correcto");
+        return this.responseBuild.success("Tarea con id: "+ id +" eliminada con exito en el backlog: " + projectIdentifier);
     }
 
     private List<Map<String, String>> formatMessage(BindingResult result){

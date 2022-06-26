@@ -24,7 +24,16 @@ public class BacklogServiceImpl implements BacklogService{
         if(project == null){
             return null;
         }
-        Backlog backlog = new BacklogDTOtoBacklog().mapper(backlogInDTO);
+
+        Backlog backlog = this.findByProjectIdentifier(backlogInDTO.getProjectIdentifier());
+
+        if(backlog != null){
+            backlog.setId(-1);
+
+            return backlog;
+        }
+
+        backlog = new BacklogDTOtoBacklog().mapper(backlogInDTO);
 
         return this.backlogRepository.save(backlog);
     }
